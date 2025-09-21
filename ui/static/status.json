@@ -1,0 +1,498 @@
+{
+  "time": 153.0,
+  "hour": 9,
+  "day": 6,
+  "virus": {
+    "name": "slowworm",
+    "desc": "Slow but persistent."
+  },
+  "hosts": [
+    {
+      "id": 0,
+      "profile": "novice",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 0,
+      "researching": false,
+      "friends": [
+        13,
+        25,
+        31
+      ]
+    },
+    {
+      "id": 1,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 1,
+      "researching": false,
+      "friends": [
+        8,
+        9,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 2,
+      "profile": "expert",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 2,
+      "researching": false,
+      "friends": [
+        23,
+        25,
+        27
+      ]
+    },
+    {
+      "id": 3,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 3,
+      "researching": false,
+      "friends": [
+        8,
+        31
+      ]
+    },
+    {
+      "id": 4,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 4,
+      "researching": false,
+      "friends": [
+        3
+      ]
+    },
+    {
+      "id": 5,
+      "profile": "absent",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 5,
+      "researching": false,
+      "friends": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 6,
+      "researching": false,
+      "friends": [
+        4,
+        27
+      ]
+    },
+    {
+      "id": 7,
+      "profile": "novice",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 7,
+      "researching": false,
+      "friends": [
+        0,
+        16,
+        24,
+        29
+      ]
+    },
+    {
+      "id": 8,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 0,
+      "researching": false,
+      "friends": [
+        17
+      ]
+    },
+    {
+      "id": 9,
+      "profile": "expert",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 1,
+      "researching": false,
+      "friends": [
+        7,
+        18,
+        27
+      ]
+    },
+    {
+      "id": 10,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 2,
+      "researching": false,
+      "friends": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": 11,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 3,
+      "researching": false,
+      "friends": [
+        6,
+        12,
+        19
+      ]
+    },
+    {
+      "id": 12,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 4,
+      "researching": false,
+      "friends": [
+        10,
+        23
+      ]
+    },
+    {
+      "id": 13,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 5,
+      "researching": false,
+      "friends": [
+        20
+      ]
+    },
+    {
+      "id": 14,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 6,
+      "researching": false,
+      "friends": [
+        1,
+        7,
+        19,
+        23
+      ]
+    },
+    {
+      "id": 15,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 7,
+      "researching": false,
+      "friends": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": 16,
+      "profile": "novice",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 0,
+      "researching": false,
+      "friends": [
+        31
+      ]
+    },
+    {
+      "id": 17,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 1,
+      "researching": false,
+      "friends": [
+        8
+      ]
+    },
+    {
+      "id": 18,
+      "profile": "expert",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 2,
+      "researching": false,
+      "friends": [
+        10,
+        30
+      ]
+    },
+    {
+      "id": 19,
+      "profile": "expert",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 3,
+      "researching": false,
+      "friends": [
+        12,
+        13,
+        27
+      ]
+    },
+    {
+      "id": 20,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 4,
+      "researching": false,
+      "friends": [
+        23,
+        25,
+        28
+      ]
+    },
+    {
+      "id": 21,
+      "profile": "novice",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 5,
+      "researching": false,
+      "friends": [
+        4,
+        7,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 22,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 6,
+      "researching": false,
+      "friends": [
+        0,
+        1,
+        14
+      ]
+    },
+    {
+      "id": 23,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 7,
+      "researching": false,
+      "friends": [
+        3
+      ]
+    },
+    {
+      "id": 24,
+      "profile": "expert",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 0,
+      "researching": false,
+      "friends": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 25,
+      "profile": "expert",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 1,
+      "researching": false,
+      "friends": [
+        4,
+        15,
+        17
+      ]
+    },
+    {
+      "id": 26,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 2,
+      "researching": false,
+      "friends": [
+        8,
+        13,
+        15,
+        30
+      ]
+    },
+    {
+      "id": 27,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 3,
+      "researching": false,
+      "friends": [
+        6,
+        12,
+        22,
+        26
+      ]
+    },
+    {
+      "id": 28,
+      "profile": "absent",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 4,
+      "researching": false,
+      "friends": [
+        3,
+        6,
+        26,
+        29
+      ]
+    },
+    {
+      "id": 29,
+      "profile": "novice",
+      "vpn": true,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.25,
+      "router": 5,
+      "researching": false,
+      "friends": [
+        25
+      ]
+    },
+    {
+      "id": 30,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 6,
+      "researching": false,
+      "friends": [
+        6,
+        12,
+        15
+      ]
+    },
+    {
+      "id": 31,
+      "profile": "novice",
+      "vpn": false,
+      "infected": false,
+      "time_infected": null,
+      "latency": 0.0,
+      "router": 7,
+      "researching": false,
+      "friends": [
+        8,
+        28
+      ]
+    }
+  ],
+  "metrics": {
+    "total": 32,
+    "infected": 0,
+    "percent_infected": 0.0,
+    "experts": 6,
+    "researching": 0
+  },
+  "research": {
+    "progress": 0.0,
+    "threshold": 100.0
+  },
+  "routers": {
+    "count": 8,
+    "types": {
+      "0": "protected",
+      "1": "public",
+      "2": "public",
+      "3": "public",
+      "4": "protected",
+      "5": "protected",
+      "6": "intelligent",
+      "7": "public"
+    }
+  }
+}

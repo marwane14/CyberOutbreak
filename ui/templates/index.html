@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CyberOutbreak - UI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .host { padding:6px; margin:4px; border-radius:6px; display:inline-block; min-width:240px; }
+    .normal { background:#ddd; color:#111; }
+    .infected { background:#ffb3b3; color:#600; } /* red-ish */
+    .expert { background:#b3ffb3; color:#063; } /* green-ish */
+    .research { background:#b3d9ff; color:#013e7b } /* blue-ish */
+    .small { font-size:0.9em; color:#333; }
+    #research-bar { width: 100%; background:#eee; height:18px; border-radius:4px; overflow:hidden; margin:8px 0; }
+    #research-fill { height:100%; width:0%; background:#2a9df4; transition: width 0.5s; }
+    .router { font-weight:bold; margin-right:8px; margin-top:10px; }
+    .router-type { font-size:0.9em; margin-left:8px; color:#444; }
+    #daynight { font-weight:bold; margin-bottom:8px; }
+  </style>
+</head>
+<body>
+<h2>CyberOutbreak - status</h2>
+<div id="time">...</div>
+<div id="daynight">...</div>
+<div id="metrics">...</div>
+<div>Virus: <span id="virus">...</span></div>
+<div id="research-bar"><div id="research-fill"></div></div>
+<div id="hosts"></div>
+<script>
+function hostClass(h){
+    if(h.infected && h.researching) return 'host research';
+    if(h.infected) return 'host infected';
+    if(h.profile=='expert') return 'host expert';
+    return 'host normal';
+}
+async function fetchStatus(){
+    try{
+        const r = await fetch('/status');
+        if(!r.ok) return;
+        const j = await r.json();
+        document.getElementById('time').innerText = 'Time (hours): ' + j.time.toFixed(1);
+        const day = j.day;
+        const hour = j.hour;
+        const phase = (hour>=6 && hour<=20) ? 'Jour' : 'Nuit';
+        document.getElementById('daynight').innerText = 'Phase: ' + phase + ' | Jour #' + day + ' | Heure: ' + hour;
+        document.getElementById('metrics').innerText = 'Infectés: ' + j.metrics.infected + '/' + j.metrics.total + ' | Experts: ' + j.metrics.experts + ' | Chercheurs: ' + j.metrics.researching;
+        document.getElementById('virus').innerText = j.virus.name + ' - ' + j.virus.desc;
+        // research bar
+        const pct = Math.min(100, (j.research.progress / j.research.threshold)*100);
+        document.getElementById('research-fill').style.width = pct + '%';
+        // hosts by router grouped
+        const hostsDiv = document.getElementById('hosts');
+        hostsDiv.innerHTML = '';
+        const routers = {};
+        j.hosts.forEach(h=>{
+            if(!(h.router in routers)) routers[h.router]=[];
+            routers[h.router].push(h);
+        });
+        const rtypes = j.routers.types;
+        Object.keys(routers).sort().forEach(rid=>{
+            const rhead = document.createElement('div');
+            const rtype = rtypes[rid] || 'public';
+            rhead.innerHTML = '<span class="router">Router '+rid+'</span><span class="router-type">('+rtype+')</span>';
+            hostsDiv.appendChild(rhead);
+            routers[rid].forEach(h=>{
+                const li = document.createElement('div');
+                li.className = hostClass(h);
+                li.innerHTML = `<strong>Host ${h.id}</strong> | profile:${h.profile} | vpn:${h.vpn} | infected:${h.infected} | researching:${h.researching} | friends:${h.friends.length}`;
+                hostsDiv.appendChild(li);
+            });
+        });
+    }catch(e){ console.log(e); }
+}
+setInterval(fetchStatus,1000);
+fetchStatus();
+</script>
+</body>
+</html>
