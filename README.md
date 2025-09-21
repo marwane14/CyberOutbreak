@@ -26,5 +26,5 @@ L’objectif est de montrer comment différents facteurs (architecture, profils 
 
 ### 1. Cloner le projet
 ```bash
-git clone https://github.com/<ton-compte>/CyberOutbreak.git
+git clone https://github.com/marwane14/CyberOutbreak.git
 cd CyberOutbreak
