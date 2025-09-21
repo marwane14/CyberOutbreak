@@ -28,3 +28,24 @@ L’objectif est de montrer comment différents facteurs (architecture, profils 
 ```bash
 git clone https://github.com/marwane14/CyberOutbreak.git
 cd CyberOutbreak
+```
+
+Contenu initial
+--------------
+- simulator/run_sim.py   : moteur de simulation (threads, état JSON)
+- ui/app.py              : UI Flask simple (polling JSON)
+- ui/templates/index.html: interface minimale
+- requirements.txt       : dépendances
+- demo/                  : instructions pour produire une démo
+
+Installation et exécution (local, sans Docker)
+---------------------------------------------
+```bash
+python -m venv venv
+source venv/bin/activate   # ou venv\Scripts\activate sur Windows
+pip install -r requirements.txt
+# Dans un terminal : lancer la simulation
+python simulator/run_sim.py
+# Dans un autre terminal : lancer l'UI
+python ui/app.py
+# Ouvrir http://127.0.0.1:5000
