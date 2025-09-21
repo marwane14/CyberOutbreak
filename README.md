@@ -41,8 +41,6 @@ Contenu initial
 Installation et exécution (local, sans Docker)
 ---------------------------------------------
 ```bash
-python -m venv venv
-source venv/bin/activate   # ou venv\Scripts\activate sur Windows
 pip install -r requirements.txt
 # Dans un terminal : lancer la simulation
 python simulator/run_sim.py
