@@ -49,7 +49,7 @@ git clone https://github.com/marwane14/CyberOutbreak.git
 cd CyberOutbreak
 ```
 
-Installation et exécution (local, sans Docker)
+Installation et exécution
 ---------------------------------------------
 ```bash
 pip install -r requirements.txt
