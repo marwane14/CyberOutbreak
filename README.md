@@ -49,13 +49,6 @@ git clone https://github.com/marwane14/CyberOutbreak.git
 cd CyberOutbreak
 ```
 
-Contenu initial
---------------
-- simulator/run_sim.py   : moteur de simulation (threads, état JSON)
-- ui/app.py              : UI Flask simple (polling JSON)
-- ui/templates/index.html: interface minimale
-- requirements.txt       : dépendances
-
 Installation et exécution (local, sans Docker)
 ---------------------------------------------
 ```bash
