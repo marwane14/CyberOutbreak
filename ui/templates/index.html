@@ -1,78 +1,183 @@
 <!doctype html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <title>CyberOutbreak - UI</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .host { padding:6px; margin:4px; border-radius:6px; display:inline-block; min-width:240px; }
-    .normal { background:#ddd; color:#111; }
-    .infected { background:#ffb3b3; color:#600; } /* red-ish */
-    .expert { background:#b3ffb3; color:#063; } /* green-ish */
-    .research { background:#b3d9ff; color:#013e7b } /* blue-ish */
-    .small { font-size:0.9em; color:#333; }
-    #research-bar { width: 100%; background:#eee; height:18px; border-radius:4px; overflow:hidden; margin:8px 0; }
-    #research-fill { height:100%; width:0%; background:#2a9df4; transition: width 0.5s; }
-    .router { font-weight:bold; margin-right:8px; margin-top:10px; }
-    .router-type { font-size:0.9em; margin-left:8px; color:#444; }
-    #daynight { font-weight:bold; margin-bottom:8px; }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberOutbreak</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>#graph{width:100%;height:560px;border-radius:12px}</style>
 </head>
-<body>
-<h2>CyberOutbreak - status</h2>
-<div id="time">...</div>
-<div id="daynight">...</div>
-<div id="metrics">...</div>
-<div>Virus: <span id="virus">...</span></div>
-<div id="research-bar"><div id="research-fill"></div></div>
-<div id="hosts"></div>
+<body class="bg-gray-50 text-gray-900">
+<header class="sticky top-0 bg-white/70 border-b">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 class="text-lg font-semibold">CyberOutbreak</h1>
+    <div class="flex gap-2">
+      <button id="btn-reset-slow" class="px-3 py-1 rounded bg-blue-600 text-white">Scénario lent</button>
+      <button id="btn-reset-fast" class="px-3 py-1 rounded bg-amber-600 text-white">Scénario rapide</button>
+      <a href="/metrics.csv" class="px-3 py-1 rounded bg-slate-700 text-white">Export CSV</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <section class="lg:col-span-2 space-y-4">
+    <div class="rounded-2xl shadow p-3 bg-white">
+      <div id="graph" class="bg-gray-100"></div>
+    </div>
+    <div class="rounded-2xl shadow p-4 bg-white">
+      <canvas id="chart" height="120"></canvas>
+    </div>
+  </section>
+
+  <aside class="space-y-4">
+    <div class="rounded-2xl p-4 bg-white">
+      <div id="time" class="text-sm text-gray-500">—</div>
+      <div id="daynight" class="text-xs text-gray-400 mt-1">—</div>
+      <div id="virus" class="mt-2 font-medium">—</div>
+      <div id="infected" class="text-2xl font-semibold mt-2">—</div>
+      <div id="infected_pct" class="text-xs text-gray-500">—</div>
+      <div class="mt-3 text-xs">Recherche <span id="research-label">—</span></div>
+      <div class="w-full bg-gray-200 rounded h-3">
+        <div id="research-fill" class="h-3 bg-blue-500 w-0 transition-all"></div>
+      </div>
+    </div>
+    <div class="rounded-2xl p-3 bg-white">
+      <pre id="host-details" class="text-sm">Clique sur un nœud...</pre>
+    </div>
+    <pre id="dbg" class="text-xs text-gray-500 p-2 bg-gray-100 rounded">dbg: init</pre>
+  </aside>
+</main>
+
 <script>
-function hostClass(h){
-    if(h.infected && h.researching) return 'host research';
-    if(h.infected) return 'host infected';
-    if(h.profile=='expert') return 'host expert';
-    return 'host normal';
+const cy = cytoscape({
+  container: document.getElementById('graph'),
+  style: [
+    { selector: 'node', style: { 'label':'data(label)','width':20,'height':20,'font-size':9,'text-valign':'center' } },
+    { selector: 'node[attacker = 1]', style: { 'background-color':'#111827','color':'#fff' } },
+    { selector: 'node[infected = 1][researching = 1]', style: { 'background-color':'#60a5fa' } },
+    { selector: 'node[infected = 1][researching = 0]', style: { 'background-color':'#ef4444' } },
+    { selector: 'node[profile = "expert"][infected = 0]', style: { 'background-color':'#22c55e' } },
+    { selector: 'edge[type = "friend"]', style: { 'width':1, 'line-style':'dashed', 'line-color':'#cbd5e1' } },
+    { selector: 'edge[type = "router"]', style: { 'width':2, 'line-color':'#94a3b8' } }
+  ],
+  layout: { name: 'cose' },
+  pixelRatio: 0.75,
+  wheelSensitivity: 0.12
+});
+cy.on('tap', 'node', e => document.getElementById('host-details').textContent = JSON.stringify(e.target.data(), null, 2));
+
+const ctx = document.getElementById('chart').getContext('2d');
+const chartData = { labels: [], datasets: [{ label: '% infectés', data: [] }] };
+const myChart = new Chart(ctx, { type: 'line', data: chartData, options: { animation:false, responsive:true, scales:{ y:{ beginAtZero:true, max:100 }}}});
+
+let lastHash = null;
+function structureHash(j){
+  const rc = (j.routers && typeof j.routers.count === 'number') ? j.routers.count : 0;
+  const rt = (j.routers && j.routers.types) ? Object.keys(j.routers.types).length : 0;
+  return `${j.hosts.length}|${rc}|${rt}|${(j.virus&&j.virus.name)||''}`;
 }
-async function fetchStatus(){
-    try{
-        const r = await fetch('/status');
-        if(!r.ok) return;
-        const j = await r.json();
-        document.getElementById('time').innerText = 'Time (hours): ' + j.time.toFixed(1);
-        const day = j.day;
-        const hour = j.hour;
-        const phase = (hour>=6 && hour<=20) ? 'Jour' : 'Nuit';
-        document.getElementById('daynight').innerText = 'Phase: ' + phase + ' | Jour #' + day + ' | Heure: ' + hour;
-        document.getElementById('metrics').innerText = 'Infectés: ' + j.metrics.infected + '/' + j.metrics.total + ' | Experts: ' + j.metrics.experts + ' | Chercheurs: ' + j.metrics.researching;
-        document.getElementById('virus').innerText = j.virus.name + ' - ' + j.virus.desc;
-        // research bar
-        const pct = Math.min(100, (j.research.progress / j.research.threshold)*100);
-        document.getElementById('research-fill').style.width = pct + '%';
-        // hosts by router grouped
-        const hostsDiv = document.getElementById('hosts');
-        hostsDiv.innerHTML = '';
-        const routers = {};
-        j.hosts.forEach(h=>{
-            if(!(h.router in routers)) routers[h.router]=[];
-            routers[h.router].push(h);
-        });
-        const rtypes = j.routers.types;
-        Object.keys(routers).sort().forEach(rid=>{
-            const rhead = document.createElement('div');
-            const rtype = rtypes[rid] || 'public';
-            rhead.innerHTML = '<span class="router">Router '+rid+'</span><span class="router-type">('+rtype+')</span>';
-            hostsDiv.appendChild(rhead);
-            routers[rid].forEach(h=>{
-                const li = document.createElement('div');
-                li.className = hostClass(h);
-                li.innerHTML = `<strong>Host ${h.id}</strong> | profile:${h.profile} | vpn:${h.vpn} | infected:${h.infected} | researching:${h.researching} | friends:${h.friends.length}`;
-                hostsDiv.appendChild(li);
-            });
-        });
-    }catch(e){ console.log(e); }
+
+function updateKPI(j){
+  const t = Number(j.time)||0;
+  const pct = Math.max(0, Math.min(100, Number(j.metrics && j.metrics.percent_infected*100)||0));
+  document.getElementById('time').textContent = `t=${t.toFixed(1)} h`;
+  document.getElementById('daynight').textContent = `Phase: ${(j.hour>=6&&j.hour<=20)?'Jour':'Nuit'} | Jour #${j.day} | Heure: ${j.hour}`;
+  document.getElementById('virus').textContent = `${(j.virus&&j.virus.name)||'—'} — ${(j.virus&&j.virus.desc)||''}`;
+  document.getElementById('infected').textContent = `${(j.metrics&&j.metrics.infected)||0}/${(j.metrics&&j.metrics.total)||0}`;
+  document.getElementById('infected_pct').textContent = `${pct.toFixed(1)}%`;
+  const rprog = Number(j.research && j.research.progress)||0;
+  const rthr = Number(j.research && j.research.threshold)||1;
+  const r = Math.max(0, Math.min(100, (rprog/rthr)*100));
+  document.getElementById('research-fill').style.width = r + '%';
+  document.getElementById('research-label').textContent = `${r.toFixed(0)}%`;
 }
-setInterval(fetchStatus,1000);
-fetchStatus();
+
+function updateChart(j){
+  const t = Math.round(Number(j.time)||0);
+  const val = Math.max(0, Math.min(100, Number(j.metrics && j.metrics.percent_infected*100)||0));
+  chartData.labels.push('t'+t);
+  chartData.datasets[0].data.push(val);
+  if(chartData.labels.length > 240){ chartData.labels.shift(); chartData.datasets[0].data.shift(); }
+  myChart.update('none');
+}
+
+function renderGraph(j){
+  const h = structureHash(j);
+  if(h === lastHash && cy.nodes().length){
+    cy.batch(()=> j.hosts.forEach(host=>{
+      const n = cy.getElementById('h'+host.id);
+      if(n.length){
+        n.data('infected', host.infected?1:0);
+        n.data('researching', host.researching?1:0);
+        n.data('attacker', host.attacker?1:0);
+        n.data('profile', host.profile||'normal');
+      }
+    }));
+    return;
+  }
+  lastHash = h;
+
+  const elements = [];
+  const seen = new Set();
+
+  j.hosts.forEach(host=>{
+    elements.push({ data:{
+      id:'h'+host.id,
+      label: host.label || ('H'+host.id),
+      infected: host.infected?1:0,
+      researching: host.researching?1:0,
+      attacker: host.attacker?1:0,
+      profile: host.profile || 'normal'
+    }});
+    (host.friends||[]).forEach(fid=>{
+      if(fid === host.id) return;
+      const a = Math.min(host.id, fid), b = Math.max(host.id, fid);
+      const eid = `f${a}-${b}`;
+      if(!seen.has(eid)){
+        seen.add(eid);
+        elements.push({ data:{ id:eid, source:'h'+a, target:'h'+b, type:'friend' }});
+      }
+    });
+  });
+
+  if(Array.isArray(j.router_edges)){
+    j.router_edges.forEach(e=>{
+      const eid = `r${e[0]}-${e[1]}`;
+      if(!seen.has(eid)){
+        seen.add(eid);
+        elements.push({ data:{ id:eid, source:'h'+e[0], target:'h'+e[1], type:'router' }});
+      }
+    });
+  }
+
+  cy.elements().remove();
+  cy.add(elements);
+  cy.layout({ name:'cose' }).run();
+}
+
+// SSE + debug
+const dbg = document.getElementById('dbg');
+let lastLen = 0;
+const es = new EventSource('/events');
+es.onopen = () => { dbg.textContent = 'dbg: open'; };
+es.onmessage = (ev) => {
+  try {
+    lastLen = ev.data.length;
+    dbg.textContent = 'dbg: data len=' + lastLen;
+    const j = JSON.parse(ev.data);
+    updateKPI(j); renderGraph(j); updateChart(j);
+  } catch(e) { dbg.textContent = 'dbg: parse error'; }
+};
+es.onerror = () => { dbg.textContent = 'dbg: error'; };
+
+// Reset
+async function post(url, body){
+  await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+}
+document.getElementById('btn-reset-slow').onclick = ()=> post('/reset', { scenario: 'scenarios/slow.yaml' });
+document.getElementById('btn-reset-fast').onclick = ()=> post('/reset', { scenario: 'scenarios/fast.yaml' });
 </script>
 </body>
 </html>
