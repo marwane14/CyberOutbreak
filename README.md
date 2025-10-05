@@ -1,66 +1,130 @@
-## CyberOutbreak 🦠💻
+## CyberOutbreak — simulateur pédagogique d’infections numériques
 
-CyberOutbreak est un laboratoire pédagogique interactif qui simule la propagation d’une infection dans un réseau informatique.
-Il permet de visualiser en temps réel comment un virus se propage et comment la défense (humaine ou automatisée) peut ralentir ou stopper l’attaque.
+CyberOutbreak est un laboratoire pédagogique isolé qui simule, de façon abstraite et sûre, la dynamique d’infections informatiques dans un réseau.
+Le projet modélise des agents adverses adaptatifs, l’apparition textuelle de failles, la création quotidienne d’hôtes, le déploiement de correctifs et la réponse humaine. Rien n’agit sur des systèmes réels. Tout est représenté par des objets et des événements simulés.
 
-L’objectif : transformer des concepts abstraits de cybersécurité en scénarios concrets et observables.
----
+## Objectifs
 
-## 🎯 Objectifs
+Rendre observables la propagation, la détection et la remédiation.
 
-- Illustrer les analogies entre virus biologiques et infections numériques.
-- Montrer l’importance de la segmentation réseau et des mécanismes de défense.
-- Comparer les comportements de différents profils d’utilisateurs (expert, novice, absent) face à une attaque.
-- Mesurer l’impact de la recherche et des contre-mesures dans la réduction d’une infection.
-- Fournir un outil simple et visuel pour sensibiliser et apprendre la cybersécurité.
+Étudier l’impact des architectures réseau et de la segmentation.
 
----
+Évaluer l’efficacité des experts et des contre-mesures automatisées.
 
-## ⚙️ Fonctionnalités actuelles
+Explorer le comportement d’agents IA abstraits récompensés pour découvertes et compromissions.
 
-- Simulation réseau avec hôtes ayant des profils variés (expert, novice, absent).
-- Propagation configurable : vitesse, probabilité, rôle des attaquants, présence d’un VPN.
-- Backend Flask diffusant l’état du réseau en temps réel via Server-Sent Events (SSE).
-- Interface web interactive :
-  - Graphe dynamique avec Cytoscape.js (noeuds = machines, liens = connexions).
-  - Courbes d’évolution avec Chart.js (% d’infectés dans le temps).
-  - Tableaux de bord simples (KPI, progression de la recherche).
-- Indicateurs en direct : nombre total d’hôtes, nombre infectés, pourcentage d’infection, progression de la recherche.
-- Exports JSON et CSV pour conserver l’historique et analyser les résultats.
-- Scénarios personnalisables via fichiers YAML (taille du réseau, nombre d’attaquants, type de virus).
+Sensibiliser aux compromis opérationnels (coût des réponses, faux positifs).
 
----
-## 🔧 Améliorations en cours
+## Principes de sécurité
 
-Le projet est encore en construction.
-Les prochaines étapes :
+Simulation strictement abstraite. Aucun exploit ou code réel.
 
-- Simplifier l’utilisation (lancer un scénario en un clic, documentation claire).
-- Optimiser les performances pour simuler des réseaux plus grands.
-- Rendre les scénarios plus riches en informations et en visualisation.
-- Corriger les bugs connus, notamment deux machines qui restent infectées en permanence.
-- Ajouter des fonctionnalités : mode “replay” de la simulation, nouvelles métriques, segmentation avancée.
+Aucune communication réseau sortante activée par défaut.
 
-## 🚀 Installation et exécution
+Kill-switch pour désactiver les agents IA.
 
-### 1. Cloner le projet
-```bash
-git clone https://github.com/marwane14/CyberOutbreak.git
-cd CyberOutbreak
-```
+Exécution recommandée en environnement isolé (VM/container) pour la sécurité.
 
-Installation et exécution
----------------------------------------------
-```bash
-pip install -r requirements.txt
+## Fonctionnalités principales
 
-# Dans un terminal : lancer la simulation
-python simulator/run_sim.py
+Simulation multi-agent intégrant hôtes, routeurs, attaquants, experts et agents IA abstraits.
 
-# Dans un autre terminal : lancer l'UI
-python ui/app.py
+Modèle de vie des hôtes : création journalière, durée de vie, retrait.
 
-# Ouvrir http://127.0.0.1:5000
-```
+Failles représentées par labels textuels avec gravité, découverte et patching simulés.
 
-👉 CyberOutbreak est pensé comme un bac à sable pédagogique : un outil en construction, qui évolue chaque semaine et s’inspire d’événements réels comme WannaCry pour rendre la cybersécurité plus concrète et accessible.
+Récompense d’agents pour compromission et découverte de vulnérabilités (modélisé).
+
+Patching et adoption progressifs selon profils d’utilisateurs.
+
+Écriture atomique d’états et de métriques pour l’interface temps réel.
+
+Interface web interactive avec graphe réseau, courbes temporelles et journal d’événements.
+
+Scénarios configurables et reproductibles pour ateliers pédagogiques.
+
+## Modèle conceptuel (haut niveau)
+
+Host : entité contenant statut, vulnérabilités textuelles, profil et métadonnées temporelles.
+
+Vulnerability : identité textuelle, gravité, état de patch, historique de découvertes.
+
+AiAgent : représentation numérique (paramètres), budget d’action, historique de récompenses.
+
+Actions : opérations abstraites (reconnaissance, tentative d’exploitation probabiliste, découverte, déplacement latéral).
+
+Reward system : mécanique de récompense pour guider les stratégies sans exécuter d’attaques réelles.
+
+## Flux de données et journaux
+
+États synthétiques horodatés exposés pour l’UI et l’analyse.
+
+Séries temporelles pour métriques (infectés, patchs, alertes, récompenses).
+
+Journal d’événements structuré listant découvertes, compromissions, patchs et mutations.
+
+Seeds RNG et logs d’expérimentation pour assurer reproductibilité.
+
+## Visualisations clés
+
+Graphe réseau dynamique coloré par statut et profil.
+
+Courbe temporelle du pourcentage d’infectés.
+
+Barres ou histogrammes pour récompenses cumulées et types de vulnérabilités.
+
+Vue « arbre évolutif » pour variants d’agents et mutations.
+
+Filtre de journal pour recherche par agent, vulnérabilité, hôte ou période.
+
+## Scénarios pédagogiques recommandés
+
+Reconnaissance IA : met l’accent sur l’inventaire et la visibilité.
+
+Furtivité IA : met en évidence l’intérêt des baselines comportementales.
+
+Adaptatif IA : montre la dynamique de mutation face aux contre-mesures.
+
+Incident « zero-day » abstrait : simule une hausse ponctuelle de succès d’exploitation pour tester playbooks.
+
+## Installation et exécution (vue générale)
+
+Déployer le simulateur et l’interface dans un environnement isolé.
+
+Lancer le moteur de simulation et l’interface web en processus séparés pour découpler calcul et UI.
+
+Ouvrir l’interface locale pour visualiser la simulation en temps réel.
+
+Utiliser des scénarios prédéfinis pour reproduire ateliers et exercices.
+
+## Développement et structure (vue d’ensemble)
+
+Modules séparés pour le moteur, la gestion des scénarios, le pool de vulnérabilités, les agents IA et l’API d’interface.
+
+Répertoire dédié aux scénarios et aux logs d’expérimentation.
+
+Tests unitaires pour la logique de simulation exigés pour toute contribution.
+
+## Contribution
+
+Ouvrir une issue pour bugs ou suggestions.
+
+Proposer des PRs avec tests et documentation.
+
+Toute contribution doit respecter l’obligation de rester abstraite et non-exécutoire.
+
+## Éthique et usage
+
+Usage strictement pédagogique et en environnement contrôlé.
+
+Ne pas exécuter en production ni sur des réseaux réels.
+
+Revue éthique recommandée pour usages hors contexte éducatif.
+
+Conserver et partager seeds et logs uniquement si compatibles avec la politique de confidentialité locale.
+
+## Prochaines étapes
+
+Ajouter scénarios guidés pour ateliers.
+
+Enrichir visualisations pédagogiques.
