@@ -100,16 +100,6 @@ Le tout sans aucun code dangereux — tout est **100% abstrait et éducatif**.
 
 ---
 
-## 🌈 Exemple d’animation pédagogique
-
-<p align="center">
-  <img src="https://media.giphy.com/media/3o7qE6FqY1D9TUMZ3O/giphy.gif" width="480">
-  <br>
-  <i>Simulation d’un cycle infection → détection → patch → stabilisation</i>
-</p>
-
----
-
 ## 🪄 En résumé
 
 > 🔥 CyberOutbreak, c’est **la cybersécurité rendue visible**.  
